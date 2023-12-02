@@ -9,65 +9,7 @@ import org.junit.Test;
 
 // TODO: change tests to be representation independent
 public class ExpressionVariantsTests {
-    // Testing Strategy for Expression
-    // Partitions for Expression.parse: String -> Expression:
-    // For operators + and *, the input string is to contain:
-    // one operator,
-    // multiple operators of the same type,
-    // multiple operators of different types.
-    // include inputs with grouping
-    //
-    // For all variants of Expression: Value, Variable, Addition, Multiplication
-    // Partitions for addExpr: Expression x Expression -> Expression
-    // - add a variant to itself
-    // - Value: 0, > 0
-    // - Include floating point numbers and precision tests for Value
-    // - For Addition and Multiplication variants, include simplification
-    // tests to check if the expression returned is in simple form
-    //
-    // Partitions for multiplyExpr: Expression x Expression -> Expression
-    // - multiply a variant by itself
-    // - Value: 0, 0 < Value < 1, 1, > 1
-    // - Include floating point numbers and precision tests for Value
-    // - For Addition and Multiplication variants, include simplification
-    // tests to check if the expression returned is in simple form
-    //
-    // Partitions for addVariable: Expression x String -> Expression
-    // - Value: 0, > 0
-    //
-    // Partitions for multiplyVariable: Expression x String -> Expression
-    // - Value: 0, 0 < Value < 1, 1, > 1
-    //
-    // Partitions for addConstant: Expression x String -> Expression
-    // - Value: 0, 0 < Value < 1, 1, > 1
-    //
-    // Partitions for appendCoefficient: Expression x String -> Expression
-    // - Value: 0, 0 < Value < 1, 1, > 1
-    //
-    // Partitions for toString: Expression -> String
-    // - Value: test numbers correct to 5 decimal places
-    //
-    // Partitions for equals: Expression x Expression -> boolean
-    // - symmetric equality
-    // - reflexive equality
-    // - transitive equality
-    // Include tests for numbers correct to 5 decimal places
-    //
-    // Partitions for hashCode: Expression -> int
-    // - include equal expressions having equal values equal correct
-    // to 5 decimal places
-    //
-    // Partitions for differentiate: Expression x String -> Expression
-    // - input string exists in expression; doesn't exist
-    // - Expressions contain multiple variables
-    //
-    // Partitions for substitute: Expression x String -> Expression
-    // - variables in the expression but not in the input string
-    // - variables in the input string but not in the expression
-    // - one variable in both the expression and the input string
-    // - multiple variables in both
-    //
-    // Full Cartesian Coverage of partitions
+
 
     @Test(expected = AssertionError.class)
     public void testAssertionsEnabled() {
@@ -992,78 +934,98 @@ public class ExpressionVariantsTests {
 
     @Test
     // covers addition
-    public void testSubstitute_Addition() {
-        Variable x = new Variable("x");
-        Variable y = new Variable("y");
-        Variable foo = new Variable("foo");
+/**
+ * Test case for the substitute method in the Addition class.
+ */
+public void testSubstitute_Addition() {
+    // Define variables and expressions
+    Variable x = new Variable("x");
+    Variable y = new Variable("y");
+    Variable foo = new Variable("foo");
 
-        Expression sum1 = new Addition(x, y);
-        Expression sum2 = new Addition(sum1, foo);
+    Expression sum1 = new Addition(x, y);
+    Expression sum2 = new Addition(sum1, foo);
 
-        Map<String, Double> env1 = new HashMap<>();
-        Map<String, Double> env2 = new HashMap<>();
-        Map<String, Double> env3 = new HashMap<>();
-        env1.put("PI", 3.142);
-        env1.put("radius", 12.0);
-        env2.put("length", 2.2);
-        env2.put("width", 1.0);
-        env2.put("x", 14.0);
-        env3.putAll(env1);
-        env3.put("x", 0.0);
-        env3.put("y", 1.2);
+    // Define test environments
+    Map<String, Double> env1 = new HashMap<>();
+    env1.put("PI", 3.142);
+    env1.put("radius", 12.0);
 
-        Expression actual1 = sum1.substitute(env1);
-        Expression actual2 = sum1.substitute(env2);
-        Expression actual3 = sum2.substitute(env3);
-        Expression expected1 = sum1;
-        Expression expected2 = new Addition(new Value(14), y);
-        Expression expected3 = new Addition(new Value(1.2), foo);
+    Map<String, Double> env2 = new HashMap<>();
+    env2.put("length", 2.2);
+    env2.put("width", 1.0);
+    env2.put("x", 14.0);
 
-        assertEquals("Expected no change", expected1, actual1);
-        assertEquals("Expected x substituted", expected2, actual2);
-        assertEquals("Expected simplified expression", expected3, actual3);
-    }
+    Map<String, Double> env3 = new HashMap<>(env1);
+    env3.put("x", 0.0);
+    env3.put("y", 1.2);
+
+    // Perform substitutions
+    Expression actual1 = sum1.substitute(env1);
+    Expression actual2 = sum1.substitute(env2);
+    Expression actual3 = sum2.substitute(env3);
+
+    // Define expected results
+    Expression expected1 = sum1;
+    Expression expected2 = new Addition(new Value(14), y);
+    Expression expected3 = new Addition(new Value(1.2), foo);
+
+    // Assert results
+    assertEquals("Expected no change", expected1, actual1);
+    assertEquals("Expected x substituted", expected2, actual2);
+    assertEquals("Expected simplified expression", expected3, actual3);
+}
+
 
     @Test
     // covers multiplication
-    public void testSubstitute_Mult() {
-        Variable x = new Variable("x");
-        Variable y = new Variable("y");
-        Variable foo = new Variable("foo");
+   /**
+ * Test case for the substitute method in the Multiplication class.
+ */
+public void testSubstitute_Mult() {
+    // Define variables and expressions
+    Variable x = new Variable("x");
+    Variable y = new Variable("y");
+    Variable foo = new Variable("foo");
 
-        Multiplication mult1 = new Multiplication(x, y);
-        Multiplication mult2 = new Multiplication(foo, mult1);
-        Multiplication mult3 = new Multiplication(mult1, mult1);
+    Multiplication mult1 = new Multiplication(x, y);
+    Multiplication mult2 = new Multiplication(foo, mult1);
+    Multiplication mult3 = new Multiplication(mult1, mult1);
 
-        Map<String, Double> env1 = new HashMap<>();
-        Map<String, Double> env2 = new HashMap<>();
-        Map<String, Double> env3 = new HashMap<>();
-        Map<String, Double> env4 = new HashMap<>();
-        env1.put("PI", 3.142);
-        env1.put("radius", 12.0);
-        env2.put("length", 2.2);
-        env2.put("width", 1.0);
-        env2.put("x", 1.000009);
-        env3.putAll(env1);
-        env3.put("x", 0.0);
-        env4.put("x", 2.0);
-        env4.put("y", 2.0);
+    // Define test environments
+    Map<String, Double> env1 = new HashMap<>();
+    env1.put("PI", 3.142);
+    env1.put("radius", 12.0);
 
-        Expression actual1 = mult1.substitute(env1);
-        Expression actual2 = mult1.substitute(env2);
-        Expression actual3 = mult2.substitute(env3);
-        Expression actual4 = mult3.substitute(env4);
-        Expression expected1 = mult1;
-        Expression expected2 = y;
-        Expression expected3 = new Value(0);
-        Expression expected4 = new Value(16);
+    Map<String, Double> env2 = new HashMap<>();
+    env2.put("length", 2.2);
+    env2.put("width", 1.0);
+    env2.put("x", 1.000009);
 
-        assertEquals("Expected no change", expected1, actual1);
-        assertEquals("Expected simplified expression, product of 1",
-                expected2, actual2);
-        assertEquals("Expected simplified expression, product of 0",
-                expected3, actual3);
-        assertEquals("Expected simplified expression, other variables ignored",
-                expected4, actual4);
-    }
+    Map<String, Double> env3 = new HashMap<>(env1);
+    env3.put("x", 0.0);
+
+    Map<String, Double> env4 = new HashMap<>();
+    env4.put("x", 2.0);
+    env4.put("y", 2.0);
+
+    // Perform substitutions
+    Expression actual1 = mult1.substitute(env1);
+    Expression actual2 = mult1.substitute(env2);
+    Expression actual3 = mult2.substitute(env3);
+    Expression actual4 = mult3.substitute(env4);
+
+    // Define expected results
+    Expression expected1 = mult1;
+    Expression expected2 = y;
+    Expression expected3 = new Value(0);
+    Expression expected4 = new Value(16);
+
+    // Assert results
+    assertEquals("Expected no change", expected1, actual1);
+    assertEquals("Expected simplified expression, product of 1", expected2, actual2);
+    assertEquals("Expected simplified expression, product of 0", expected3, actual3);
+    assertEquals("Expected simplified expression, other variables ignored", expected4, actual4);
+}
+
 }
