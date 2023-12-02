@@ -13,72 +13,7 @@ import org.junit.Test;
  * Tests for the concrete variants of Expression
  */
 public class ExpressionTest {
-    // Testing Strategy:
-    //  Partition for Expression.parse: String -> Expression
-    //   For operators + and *, the input string to contain:
-    //     one operator,
-    //     multiple operators of the same type,
-    //     multiple operators of different types.
-    //   include inputs with grouping
-    //
-    //  Partition for addExpr: Expression x Expression -> Expression
-    //    an empty expression, 
-    //    contains multiple variables,
-    //    input expression as a subset of this expression,
-    //    input expression equals this
-    //  
-    //  Partition for multiplyExpr: Expression x Expression -> Expression
-    //    an empty expression,
-    //    expression as the value 1,
-    //    contains multiple variables
-    //    input expression as a subset of this expression
-    //    input expression equals this
-    //  
-    //  Partition for addVariable: Expression x String -> Expression
-    //    this: empty expression, 
-    //          doesn't contain input variable,
-    //          contains input variable
-    //
-    //  Partition for multiplyVariable: Expression x String -> Expression
-    //    this: empty expression,
-    //          expression as a single value 1,
-    //          doesn't contain input variable,
-    //          contains input variable
-    //
-    //  Partition for addConstant: Expression x double -> Expression
-    //    this: empty expression,
-    //          expression contains the value
-    //    value: 0, > 0
-    //
-    //  Partition for appendCoefficient: Expression x double -> Expression
-    //    this: empty expression,
-    //          expression as the value 1,
-    //    coefficient: 0, 1, > 1
-    //          
-    //  Partition for substitute: Expression x Map -> Expression
-    //    variables in the expression but not in the input string,
-    //    variables in the input string but not in the expression,
-    //    one variable in both the expression and the input string,
-    //    multiple variables in both
-    //
-    //  Partition for differentiate: Expression x String -> Expression
-    //    this: empty expression,
-    //          expression as a single value,
-    //          does not contain input variable,
-    //          contains multiple instances of variable
-    //
-    //  Partition for toString: Expression -> String
-    //    this: empty expression,
-    //          contains multiple variables and values
-    //
-    //  Partition for equals: Expression x Expression -> boolean
-    //    reflexive, symmetric and transitive equality
-    //    include tests for numbers correct to 5 decimal places
-    //    
-    //  Partition for hashCode: Expression -> int
-    //    include equal expressions having equal values equal correct
-    //    to 5 decimal places
-    
+   
     
     final Expression empty = Expression.emptyExpression();
     final Expression one = Expression.parse("1.000009");
